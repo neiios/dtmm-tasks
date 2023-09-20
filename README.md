@@ -1,2 +1,1 @@
-# dtmm-tasks
- Įvadas į duomenų tyrybą ir mašininį mokymąsi
+# Įvadas į duomenų tyrybą ir mašininį mokymąsi
