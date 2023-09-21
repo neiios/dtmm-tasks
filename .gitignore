@@ -49,3 +49,5 @@ po/*~
 rsconnect/
 
 emokymai
+.direnv
+*.png

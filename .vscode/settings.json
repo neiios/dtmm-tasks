@@ -1,0 +1,6 @@
+{
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "r.plot.useHttpgd": true,
+    "r.removeLeadingComments": true
+}
