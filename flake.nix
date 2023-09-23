@@ -17,6 +17,8 @@
             # libraries
             tidyverse # provides many packages at once
             psych
+            Hmisc
+            corrplot
             # dev tools
             lintr
             httpgd
