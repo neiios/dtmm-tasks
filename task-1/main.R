@@ -1,19 +1,39 @@
 library(psych)
 library(tidyverse)
 
-# dont use multiple times
+# 1. Failo nuskaitymas
+
+getwd()
+
 setwd(file.path(getwd(), "task-1"))
 
-data <- read.csv("data.csv")
+# Failo nuskaitymas ir praleistų reikšmių užpildymas <Na>
+data <- read.csv("data.csv", na.strings=c(""))
 
-# 2. priešanalizė
+# 2. Teisingų kintamųjų reikšmių nustatymas
+
+convert_to_numeric <- function(variable, pattern){
+  # Nereikalingų simbolių pašalinimas
+  numeric_variable <- gsub(pattern, "", variable)
+  # Konvertavimas į skaitinę reikšmę
+  as.numeric(as.character(numeric_variable))
+}
+
+# 'Expenses' stulpelis
+data$Expenses <- convert_to_numeric(data$Expenses, pattern = " Dollars|,")
+
+# 'Profit' stulpelis
+data$Revenue <- convert_to_numeric(data$Revenue, pattern = "\\$|,")
+
+# 'Growth' stulpelis
+data$Growth <- convert_to_numeric(data$Growth, pattern = "\\%")
+
+# 3. Aprašomoji statistika ir duomenų priešanalizė
+
+head(data, 5)
+
+str(data)
+
 summary(data)
-describeBy(data, "Industry")
 
 # 4. praleistų reikšmių užpildymas
-# fill in industries
-data[data$Industry == "", ]
-data[14, "Industry"] <- "IT Services"
-data[15, "Industry"] <- "Financial Services"
-data[136, "Industry"] <- "Construction"
-unique(data$Industry)
