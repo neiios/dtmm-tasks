@@ -101,8 +101,12 @@ empty_values_test
 data[!complete.cases(data),]
 
 fin <- fill_missing_states(fin)
-fin = median_imputation_filling(fin)
-fin = adjust_profit(fin)
-fin = adjust_expenses(fin)
+fin <- median_imputation_filling(fin)
+fin <- adjust_profit(fin)
+fin <- adjust_expenses(fin)
+
+empty_values_test <- mapply(anyNA, fin)
+empty_values_test
+
 
 
