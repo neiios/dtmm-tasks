@@ -179,3 +179,16 @@ fin <- remove_extreme_outliers_by_industry(fin, "Growth")
 # fin <- remove_extreme_outliers_by_industry(fin, "Inception")
 
 find_correlations(fin)
+
+# 6. Normavimas
+min_max_normalization <- function(x) {
+  return((x - min(x)) / (max(x) - min(x)))
+}
+
+zscore_normalization <- function(x) {
+  return((x - mean(x)) / sd(x))
+}
+
+fin_norm <- fin
+fin_norm[, 5] <- min_max_normalization(fin[, 5])
+fin_norm[, 8:11] <- apply(fin[, 8:11], 2, min_max_normalization)
