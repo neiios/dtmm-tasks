@@ -36,4 +36,21 @@ str(data)
 
 summary(data)
 
-# 4. praleistų reikšmių užpildymas
+# 4. Praleistų reikšmių užpildymas
+
+# 4.1. Praleistų reikšmių identifikavimas
+
+empty_values_test <- mapply(anyNA, data)
+empty_values_test
+
+data[!complete.cases(data),]
+
+# 4.2. Faktinis užpildymas
+data[is.na(data$State),]
+
+data[is.na(data$State) & data$City=="New York","State"] <- "NY"
+data[is.na(data$State) & data$City=="Newport Beach","State"] <- "CA"
+data[is.na(data$State) & data$City=="San Francisco","State"] <- "CA"
+data[is.na(data$State) & data$City=="Chicago","State"] <- "IL"
+data[is.na(data$State) & data$City=="Alpharetta","State"] <- "GA"
+
