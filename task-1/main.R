@@ -46,11 +46,32 @@ empty_values_test
 data[!complete.cases(data),]
 
 # 4.2. Faktinis užpildymas
+
 data[is.na(data$State),]
 
-data[is.na(data$State) & data$City=="New York","State"] <- "NY"
-data[is.na(data$State) & data$City=="Newport Beach","State"] <- "CA"
-data[is.na(data$State) & data$City=="San Francisco","State"] <- "CA"
-data[is.na(data$State) & data$City=="Chicago","State"] <- "IL"
-data[is.na(data$State) & data$City=="Alpharetta","State"] <- "GA"
+# data[is.na(data$State) & data$City=="New York","State"] <- "NY"
+# data[is.na(data$State) & data$City=="Newport Beach","State"] <- "CA"
+# data[is.na(data$State) & data$City=="San Francisco","State"] <- "CA"
+# data[is.na(data$State) & data$City=="Chicago","State"] <- "IL"
+# data[is.na(data$State) & data$City=="Alpharetta","State"] <- "GA"
+
+fill_missing_states <- function(df) {
+  states_and_cities <- list(
+    "New York" = "NY",
+    "Newport Beach" = "CA",
+    "San Francisco" = "CA",
+    "Chicago" = "IL",
+    "Alpharetta" = "GA"
+  )
+  
+  for(city in names(states_and_cities)) {
+    df$State[is.na(df$State) & df$City == city] <- states_and_cities[[city]]
+  }
+  
+  return(df)
+}
+
+# Use the function
+data <- fill_missing_states(data)
+
 
