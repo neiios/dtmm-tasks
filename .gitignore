@@ -51,4 +51,5 @@ rsconnect/
 emokymai
 .direnv
 *.png
-table.tex
+*.tex
+*.txt
