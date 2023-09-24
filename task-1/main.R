@@ -11,6 +11,8 @@ library("corrplot")
 library("xtable")
 library("stargazer")
 
+options(width = 9999)
+
 getwd()
 setwd(file.path(getwd(), "task-1")) # TODO: doesn't work in rstudio?
 
@@ -18,6 +20,7 @@ source("utils.R")
 
 original_data <- read.csv("data.csv", na.strings = c(""))
 
+# CLEANING
 fin <- original_data
 fin <- convert_to_numeric(fin)
 
@@ -38,32 +41,17 @@ fin <- fin[, -1]
 empty_values_test <- mapply(anyNA, fin)
 empty_values_test
 
-non_char_cols <- sapply(fin, function(x) !is.character(x))
-fin_non_char <- fin[, non_char_cols]
-
+# STATS
 head(fin, 5)
 str(fin)
+summary(select_if(fin, is.numeric))
+apply(select_if(fin, is.numeric), 2, sd)
+source("fuck-ton-of-tables.R")
 
-summary(fin_non_char)
-apply(fin_non_char, 2, sd)
+# OUTLIERS
+source("outliers.R")
 
-plot_outliers_by_industry(fin, "Revenue")
-identify_outliers_by_industry(fin, "Revenue")
-fin <- remove_extreme_outliers_by_industry(fin, "Revenue")
-
-plot_outliers_by_industry(fin, "Expenses")
-identify_outliers_by_industry(fin, "Expenses")
-fin <- remove_extreme_outliers_by_industry(fin, "Expenses")
-
-plot_outliers_by_industry(fin, "Growth")
-identify_outliers_by_industry(fin, "Growth")
-fin <- remove_extreme_outliers_by_industry(fin, "Growth")
-
-# NOTE: doesnt make much sense but at least we can test removal
-# plot_outliers_by_industry(fin, "Inception")
-# identify_outliers_by_industry(fin, "Inception")
-# fin <- remove_extreme_outliers_by_industry(fin, "Inception")
-
+# NORMALIZATION
 min_max_normalization <- function(x) {
   return((x - min(x)) / (max(x) - min(x)))
 }
@@ -72,8 +60,22 @@ zscore_normalization <- function(x) {
   return((x - mean(x)) / sd(x))
 }
 
-fin_norm <- fin
-fin_norm[, 5] <- min_max_normalization(fin[, 5])
-fin_norm[, 8:11] <- apply(fin[, 8:11], 2, min_max_normalization)
+fin_min_max_norm <- fin
+fin_min_max_norm[, 3:4] <- min_max_normalization(fin[, 4])
+fin_min_max_norm[, 7:10] <- apply(fin[, 7:10], 2, min_max_normalization)
 
-find_correlations(fin_norm)
+summary(select_if(fin_min_max_norm, is.numeric))
+apply(select_if(fin_min_max_norm, is.numeric), 2, sd)
+
+fin_zscore_norm <- fin
+fin_zscore_norm[, 3:4] <- zscore_normalization(fin[, 4])
+fin_zscore_norm[, 7:10] <- apply(fin[, 7:10], 2, zscore_normalization)
+
+summary(select_if(fin_zscore_norm, is.numeric))
+apply(select_if(fin_zscore_norm, is.numeric), 2, sd)
+
+# CORRELATIONS
+df_numeric <- select_if(fin_zscore_norm, is.numeric)
+rcorr(as.matrix(df_numeric))
+source("http://www.sthda.com/upload/rquery_cormat.r")
+rquery.cormat(df_numeric)
