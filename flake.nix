@@ -19,6 +19,8 @@
             psych
             Hmisc
             corrplot
+            xtable
+            stargazer
             # dev tools
             lintr
             httpgd

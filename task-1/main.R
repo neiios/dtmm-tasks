@@ -8,6 +8,8 @@ library("psych")
 library("tidyverse")
 library("Hmisc")
 library("corrplot")
+library("xtable")
+library("stargazer")
 
 getwd()
 setwd(file.path(getwd(), "task-1")) # TODO: doesn't work in rstudio?
@@ -18,10 +20,6 @@ original_data <- read.csv("data.csv", na.strings = c(""))
 
 fin <- original_data
 fin <- convert_to_numeric(fin)
-
-head(fin, 5)
-str(fin)
-summary(fin)
 
 empty_values_test <- mapply(anyNA, fin)
 empty_values_test
@@ -34,9 +32,20 @@ fin <- adjust_profit(fin)
 fin <- adjust_expenses(fin)
 
 fin <- fin[!is.na(fin$Industry), ]
+fin <- fin[!is.na(fin$Inception), ]
+fin <- fin[, -1]
 
 empty_values_test <- mapply(anyNA, fin)
 empty_values_test
+
+non_char_cols <- sapply(fin, function(x) !is.character(x))
+fin_non_char <- fin[, non_char_cols]
+
+head(fin, 5)
+str(fin)
+
+summary(fin_non_char)
+apply(fin_non_char, 2, sd)
 
 plot_outliers_by_industry(fin, "Revenue")
 identify_outliers_by_industry(fin, "Revenue")
