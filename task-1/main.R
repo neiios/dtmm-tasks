@@ -29,17 +29,25 @@ empty_values_test
 
 original_data[!complete.cases(original_data), ]
 
+# factual
 fin <- fill_missing_states(fin)
-fin <- median_imputation_filling(fin)
-fin <- adjust_profit(fin)
-fin <- adjust_expenses(fin)
+fin <- fin %>% # fill third value if other two are present
+  mutate(
+    Profit = ifelse(is.na(Profit) & !is.na(Revenue) & !is.na(Expenses), Revenue - Expenses, Profit),
+    Revenue = ifelse(is.na(Revenue) & !is.na(Profit) & !is.na(Expenses), Profit + Expenses, Revenue),
+    Expenses = ifelse(is.na(Expenses) & !is.na(Profit) & !is.na(Revenue), Revenue - Profit, Expenses)
+  )
 
+# median fill
+fin <- median_imputation_filling(fin)
+
+# removal
 fin <- fin[!is.na(fin$Industry), ]
 fin <- fin[!is.na(fin$Inception), ]
-fin <- fin[, -1]
+fin <- fin[, -1] # drop first column
 
-empty_values_test <- mapply(anyNA, fin)
-empty_values_test
+mapply(anyNA, fin)
+fin[!complete.cases(fin), ]
 
 # STATS
 head(fin, 5)

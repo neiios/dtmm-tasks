@@ -31,7 +31,7 @@ fill_missing_states <- function(df) {
 median_imputation_filling <- function(df) {
     industries <- unique(df$Industry)
 
-    metrics <- c("Employees", "Revenue", "Expenses", "Growth")
+    metrics <- c("Employees", "Revenue", "Expenses", "Profit", "Growth")
 
     for (industry in industries) {
         for (metric in metrics) {
@@ -39,20 +39,6 @@ median_imputation_filling <- function(df) {
             df[is.na(df[[metric]]) & df$Industry == industry, metric] <- median_val
         }
     }
-
-    return(df)
-}
-
-adjust_profit <- function(df) {
-    df[is.na(df$Profit), "Profit"] <- df[is.na(fin$Profit), "Revenue"] -
-        df[is.na(df$Profit), "Expenses"]
-
-    return(df)
-}
-
-adjust_expenses <- function(df) {
-    df[is.na(df$Expenses), "Expenses"] <- df[is.na(fin$Expenses), "Revenue"] -
-        df[is.na(df$Expenses), "Profit"]
 
     return(df)
 }
