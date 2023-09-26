@@ -55,7 +55,7 @@ head(fin, 5)
 str(fin)
 summary(select_if(fin, is.numeric))
 apply(select_if(fin, is.numeric), 2, sd)
-source("fuck-ton-of-tables.R")
+source("tex-tables.R")
 
 # Išskirčių identifikavimas
 source("outliers.R")
