@@ -10,26 +10,26 @@ library("Hmisc")
 library("corrplot")
 library("xtable")
 library("stargazer")
-
-options(width = 9999)
+library("ggplot2")
 
 getwd()
-setwd(file.path(getwd(), "task-1")) # TODO: doesn't work in rstudio?
+setwd(file.path(getwd(), "task-1"))
 
 source("utils.R")
 
 original_data <- read.csv("data.csv", na.strings = c(""))
 
-# CLEANING
+# Duomenų priešanalizė 
 fin <- original_data
 fin <- convert_to_numeric(fin)
 
+# Praleistų reikšmių identifikavimas
 empty_values_test <- mapply(anyNA, fin)
 empty_values_test
 
 original_data[!complete.cases(original_data), ]
 
-# factual
+# Faktinis užpildymas
 fin <- fill_missing_states(fin)
 fin <- fin %>% # fill third value if other two are present
   mutate(
@@ -38,28 +38,29 @@ fin <- fin %>% # fill third value if other two are present
     Expenses = ifelse(is.na(Expenses) & !is.na(Profit) & !is.na(Revenue), Revenue - Profit, Expenses)
   )
 
-# median fill
+# Užpildymas mediana
 fin <- median_imputation_filling(fin)
 
-# removal
+# Praleistų reikšmių pašalinimas
 fin <- fin[!is.na(fin$Industry), ]
 fin <- fin[!is.na(fin$Inception), ]
 fin <- fin[, -1] # drop first column
 
+# Praleistų reikšmių identifikavimas
 mapply(anyNA, fin)
 fin[!complete.cases(fin), ]
 
-# STATS
+# Aprašomoji statistika 
 head(fin, 5)
 str(fin)
 summary(select_if(fin, is.numeric))
 apply(select_if(fin, is.numeric), 2, sd)
 source("fuck-ton-of-tables.R")
 
-# OUTLIERS
+# Išskirčių identifikavimas
 source("outliers.R")
 
-# NORMALIZATION
+# Duomenų normavimas
 min_max_normalization <- function(x) {
   return((x - min(x)) / (max(x) - min(x)))
 }
@@ -82,8 +83,9 @@ fin_zscore_norm[, 7:10] <- apply(fin[, 7:10], 2, zscore_normalization)
 summary(select_if(fin_zscore_norm, is.numeric))
 apply(select_if(fin_zscore_norm, is.numeric), 2, sd)
 
-# CORRELATIONS
+# Koreliacijos
 df_numeric <- select_if(fin_zscore_norm, is.numeric)
 rcorr(as.matrix(df_numeric))
 source("http://www.sthda.com/upload/rquery_cormat.r")
 rquery.cormat(df_numeric)
+
