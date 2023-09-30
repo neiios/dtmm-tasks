@@ -78,27 +78,52 @@ plot_outliers_by_industry(fin, "Profit")
 
 summary(select_if(fin, is.numeric))
 
-hist(fin$Employees,
-    xlab = "Darbuotojų skaičius",
-    ylab = "Kiekis",
-    col = "steelblue",
-    main = "",
-    breaks = 100,
-)
+ggplot(fin, aes(x = Employees)) +
+    theme_minimal() +
+    geom_histogram(
+        breaks = seq(min(fin$Employees), max(fin$Employees), length.out = 101),
+        col = "black", fill = "steelblue", aes(y = ..count..)
+    ) +
+    theme(
+        axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = .5),
+        legend.position = "right",
+        text = element_text(size = 20)
+    ) +
+    guides(color = FALSE) +
+    xlab("Darbuotojų skaičius") +
+    ylab("Kiekis")
 
-boxplot(fin$Revenue, fin$Expenses, fin$Profit,
-    ylab = "Dollars",
-    col = "steelblue"
-)
+fin_long <- fin %>%
+    pivot_longer(c(Revenue, Expenses, Profit),
+        names_to = "variable", values_to = "value"
+    )
+
+ggplot(fin_long, aes(x = variable, y = value, fill = variable)) +
+    theme_minimal() +
+    geom_boxplot() +
+    scale_fill_manual(values = c("steelblue", "steelblue", "steelblue")) +
+    ylab("Dollars") +
+    xlab("") +
+    theme(
+        axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = .5),
+        legend.position = "none",
+        text = element_text(size = 20)
+    ) +
+    guides(color = FALSE)
 
 summary(select_if(fin, is.numeric))
 apply(select_if(fin, is.numeric), 2, sd)
 
 plot_outliers_by_industry <- function(df, metric) {
+    library("ggplot2")
+
     ggplot(df, aes_string(x = "Industry", y = metric)) +
         theme_minimal() +
         geom_boxplot(aes(color = Industry)) +
-        theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = .5)) +
-        theme(legend.position = "right") +
+        theme(
+            axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = .5),
+            legend.position = "right",
+            text = element_text(size = 20)
+        ) +
         guides(color = FALSE)
 }
