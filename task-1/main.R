@@ -19,7 +19,7 @@ source("utils.R")
 
 original_data <- read.csv("data.csv", na.strings = c(""))
 
-# Duomenų priešanalizė 
+# Duomenų priešanalizė
 fin <- original_data
 fin <- convert_to_numeric(fin)
 
@@ -50,7 +50,7 @@ fin <- fin[, -1] # drop first column
 mapply(anyNA, fin)
 fin[!complete.cases(fin), ]
 
-# Aprašomoji statistika 
+# Aprašomoji statistika
 head(fin, 5)
 str(fin)
 summary(select_if(fin, is.numeric))
@@ -88,4 +88,3 @@ df_numeric <- select_if(fin_zscore_norm, is.numeric)
 rcorr(as.matrix(df_numeric))
 source("http://www.sthda.com/upload/rquery_cormat.r")
 rquery.cormat(df_numeric)
-
